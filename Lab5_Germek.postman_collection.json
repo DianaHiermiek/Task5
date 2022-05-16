@@ -1,0 +1,663 @@
+{
+	"info": {
+		"_postman_id": "6039201c-e6c9-444f-86ca-1809912f5cf6",
+		"name": "Lab5_Germek",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GET User ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful response\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://postman-echo.com/get?userId=333",
+					"protocol": "https",
+					"host": [
+						"postman-echo",
+						"com"
+					],
+					"path": [
+						"get"
+					],
+					"query": [
+						{
+							"key": "userId",
+							"value": "333"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET IP Address",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful response\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response has valid json body\", function () {\r",
+							"    pm.response.to.have.jsonBody('ip');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response must return a valid IP address\", function () {\r",
+							"    pm.expect(pm.response.json().ip).to\r",
+							"        // expression to ensure that ip address is in correct format\r",
+							"        .match(/^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://postman-echo.com/ip",
+					"protocol": "https",
+					"host": [
+						"postman-echo",
+						"com"
+					],
+					"path": [
+						"ip"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET Request",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful response\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response body has json with request queries\", function () {\r",
+							"    pm.response.to.have.jsonBody('args.foo1', 'bar1')\r",
+							"        .and.have.jsonBody('args.foo2', 'bar2');\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://postman-echo.com/get?foo1=bar1&foo2=bar2",
+					"protocol": "https",
+					"host": [
+						"postman-echo",
+						"com"
+					],
+					"path": [
+						"get"
+					],
+					"query": [
+						{
+							"key": "foo1",
+							"value": "bar1"
+						},
+						{
+							"key": "foo2",
+							"value": "bar2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET Response Status Code",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful response\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response has valid json body\", function () {\r",
+							"    pm.response.to.have.jsonBody('status');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status in response body must match the one in request\", function () {\r",
+							"    pm.response.to.have.jsonBody('status', Number(_.get(pm.request, 'url.path[1]')));\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://postman-echo.com/status/200",
+					"protocol": "https",
+					"host": [
+						"postman-echo",
+						"com"
+					],
+					"path": [
+						"status",
+						"200"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Set Cookies",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Response should be 200 or 302', function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 302]);\r",
+							"});\r",
+							"\r",
+							"pm.test('The \"foo1\" cookie has correct value', function () {\r",
+							"    pm.expect(pm.cookies.toObject()).to.have.property('foo1', 'bar1');\r",
+							"});\r",
+							"\r",
+							"pm.test('The \"foo2\" cookie has correct value', function () {\r",
+							"    pm.expect(pm.cookies.toObject()).to.have.property('foo2', 'bar2');\r",
+							"});\r",
+							"\r",
+							"pm.test('Response body should be valid', function () {\r",
+							"    if (pm.response.code === 200) {\r",
+							"        pm.response.to.have.jsonBody('cookies.foo1', 'bar1')\r",
+							"            .and.have.jsonBody('cookies.foo2', 'bar2');\r",
+							"    }\r",
+							"    else {\r",
+							"        pm.response.to.have.body('Found. Redirecting to /cookies');\r",
+							"    }\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://postman-echo.com/cookies/set?foo1=bar1&foo2=bar2",
+					"protocol": "https",
+					"host": [
+						"postman-echo",
+						"com"
+					],
+					"path": [
+						"cookies",
+						"set"
+					],
+					"query": [
+						{
+							"key": "foo1",
+							"value": "bar1"
+						},
+						{
+							"key": "foo2",
+							"value": "bar2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Cookies",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Response should be 200 or 302', function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 302]);\r",
+							"});\r",
+							"\r",
+							"pm.test('The \"foo1\" cookie should not be present', function () {\r",
+							"    pm.expect(pm.cookies.toObject()).to.not.have.property('foo1');\r",
+							"});\r",
+							"\r",
+							"pm.test('The \"foo2\" cookie should not be present', function () {\r",
+							"    pm.expect(pm.cookies.toObject()).to.not.have.property('foo2');\r",
+							"});\r",
+							"\r",
+							"pm.test('Response body should be valid', function () {\r",
+							"    if (pm.response.code === 200) {\r",
+							"        pm.response.to.not.have.jsonBody('cookies.foo1');\r",
+							"        pm.response.to.not.have.jsonBody('cookies.foo2');\r",
+							"    }\r",
+							"    else {\r",
+							"        pm.response.to.have.body('Found. Redirecting to /cookies');\r",
+							"    }\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://postman-echo.com/cookies/delete?foo1&foo2",
+					"protocol": "https",
+					"host": [
+						"postman-echo",
+						"com"
+					],
+					"path": [
+						"cookies",
+						"delete"
+					],
+					"query": [
+						{
+							"key": "foo1",
+							"value": null
+						},
+						{
+							"key": "foo2",
+							"value": null
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT Request",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful response\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response body has json with form data\", function () {\r",
+							"    pm.response.to.have.jsonBody('data', \r",
+							"        'Text.');\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "Text."
+				},
+				"url": {
+					"raw": "https://postman-echo.com/put",
+					"protocol": "https",
+					"host": [
+						"postman-echo",
+						"com"
+					],
+					"path": [
+						"put"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET Delay",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var _ = require('lodash');\r",
+							"\r",
+							"pm.test(\"Successful response\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response has valid json body\", function () {\r",
+							"    pm.response.to.have.jsonBody('delay');\r",
+							"});\r",
+							"\r",
+							"// additional sanity tests\r",
+							"pm.test(\"Request must have a valid delay\", function () {\r",
+							"    pm.expect(Number(_.get(pm.request, 'url.path[1]'))).to.be.above(0).and.below(10);\r",
+							"});\r",
+							"pm.test(\"Response should take more time than the delay specified\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.above(Number(_.get(pm.request, 'url.path[1]')));\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://postman-echo.com/delay/2",
+					"protocol": "https",
+					"host": [
+						"postman-echo",
+						"com"
+					],
+					"path": [
+						"delay",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET Response Headers",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful response\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response has the headers sent as part of request query\", function () {\r",
+							"    pm.response.to.have.header('foo1', 'bar1')\r",
+							"        .and.have.header('foo2', 'bar2');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Sample request param should be returned in response body\", function () {\r",
+							"    pm.response.to.have.jsonBody('foo1', 'bar1')\r",
+							"        .and.have.jsonBody('foo2', 'bar2');\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://postman-echo.com/response-headers?foo1=bar1&foo2=bar2",
+					"protocol": "https",
+					"host": [
+						"postman-echo",
+						"com"
+					],
+					"path": [
+						"response-headers"
+					],
+					"query": [
+						{
+							"key": "foo1",
+							"value": "bar1"
+						},
+						{
+							"key": "foo2",
+							"value": "bar2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET Current Time",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful response\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time matches server response 'date' header\", function () {\r",
+							"    pm.expect(pm.response.text()).to.eql(pm.response.headers.get('date'))\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://postman-echo.com/time/now",
+					"protocol": "https",
+					"host": [
+						"postman-echo",
+						"com"
+					],
+					"path": [
+						"time",
+						"now"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET Object",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful response\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response json should return the date components\", function () {\r",
+							"    pm.expect(pm.response.json()).to.eql({\r",
+							"        \"years\": 2022,\r",
+							"        \"months\": 4,\r",
+							"        \"date\": 16,\r",
+							"        \r",
+							"        \"hours\": 0,\r",
+							"        \"minutes\": 0,\r",
+							"        \"seconds\": 0,\r",
+							"        \"milliseconds\": 0\r",
+							"    });\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://postman-echo.com/time/object?timestamp=2022-05-16",
+					"protocol": "https",
+					"host": [
+						"postman-echo",
+						"com"
+					],
+					"path": [
+						"time",
+						"object"
+					],
+					"query": [
+						{
+							"key": "timestamp",
+							"value": "2022-05-16"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE Request",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful response\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response body has json with form data\", function () {\r",
+							"    pm.response.to.have.jsonBody('data', \r",
+							"        'Text.');\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "Text."
+				},
+				"url": {
+					"raw": "https://postman-echo.com/delete",
+					"protocol": "https",
+					"host": [
+						"postman-echo",
+						"com"
+					],
+					"path": [
+						"delete"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PATCH Data Type",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Content-Type is present\", function () {\r",
+							"    pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type is JSON\", function () {\r",
+							"    pm.response.to.be.json;\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "Text"
+				},
+				"url": {
+					"raw": "https://postman-echo.com/patch",
+					"protocol": "https",
+					"host": [
+						"postman-echo",
+						"com"
+					],
+					"path": [
+						"patch"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST Functional",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Returns 8 char alphanumeric id\", function () {\r",
+							"    let jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.form.first).to.match(/^[a-z0-9]{8}$/);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Returns 10 char alhpanumeric id\", function () {\r",
+							"    let jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.form.second).to.match(/^[a-z0-9]{10}$/);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "first",
+							"value": "12345678",
+							"type": "text"
+						},
+						{
+							"key": "second",
+							"value": "1234qwerty",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://postman-echo.com/post",
+					"protocol": "https",
+					"host": [
+						"postman-echo",
+						"com"
+					],
+					"path": [
+						"post"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
